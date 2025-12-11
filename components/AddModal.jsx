@@ -2,12 +2,67 @@
 import { useState } from "react";
 import { actionAddBook } from "@/lib/actions";
 import { useRouter } from "next/navigation";
+import { Upload } from "lucide-react";
 
 export default function AddModal({ onClose }) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [coverUrl, setCoverUrl] = useState("");
+    const [previewUrl, setPreviewUrl] = useState("");
+    const [uploadedImagePath, setUploadedImagePath] = useState("");
+    const [uploading, setUploading] = useState(false);
+
+    async function handleFileChange(e) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            setError('File harus berupa gambar (jpg, png, gif, dll)');
+            return;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            setError('Ukuran file maksimal 5MB');
+            return;
+        }
+
+        setError('');
+        setUploading(true);
+
+        // Show preview
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setPreviewUrl(reader.result);
+        };
+        reader.readAsDataURL(file);
+
+        // Upload file
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch('/api/upload-image', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setUploadedImagePath(data.imagePath);
+            } else {
+                setError(data.error || 'Gagal upload gambar');
+                setPreviewUrl('');
+            }
+        } catch (err) {
+            setError('Gagal upload gambar');
+            setPreviewUrl('');
+        } finally {
+            setUploading(false);
+        }
+    }
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -15,6 +70,12 @@ export default function AddModal({ onClose }) {
         setError("");
 
         const formData = new FormData(e.target);
+
+        // Add uploaded image path to formData
+        if (uploadedImagePath) {
+            formData.set('image', uploadedImagePath);
+        }
+
         await actionAddBook(formData);
         router.refresh();
         onClose();
@@ -48,23 +109,34 @@ export default function AddModal({ onClose }) {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Link Cover Buku</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Cover Buku</label>
                             <div className="flex gap-4">
-                                {coverUrl && (
-                                    <div className="w-32 h-40 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                                        <img src={coverUrl} alt="Preview" className="w-full h-full object-cover" onError={(e) => e.target.style.display = 'none'} />
+                                {previewUrl && (
+                                    <div className="w-32 h-40 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border-2 border-orange-200">
+                                        <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
                                     </div>
                                 )}
                                 <div className="flex-1">
-                                    <input
-                                        name="image"
-                                        type="text"
-                                        value={coverUrl}
-                                        onChange={(e) => setCoverUrl(e.target.value)}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                                        placeholder="https://example.com/image.jpg"
-                                    />
-                                    <p className="text-xs text-gray-500 mt-1">Masukkan URL gambar dari Google atau sumber lain</p>
+                                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-orange-500 transition">
+                                        <input
+                                            type="file"
+                                            id="cover-upload"
+                                            accept="image/*"
+                                            onChange={handleFileChange}
+                                            className="hidden"
+                                        />
+                                        <label htmlFor="cover-upload" className="cursor-pointer">
+                                            <Upload className="mx-auto text-gray-400 mb-2" size={32} />
+                                            <p className="text-sm font-medium text-gray-700">Klik untuk upload gambar</p>
+                                            <p className="text-xs text-gray-500 mt-1">JPG, PNG, GIF (Max 5MB)</p>
+                                        </label>
+                                        {uploading && (
+                                            <p className="text-sm text-orange-600 mt-2">Mengupload...</p>
+                                        )}
+                                        {uploadedImagePath && (
+                                            <p className="text-sm text-green-600 mt-2">✓ Gambar berhasil diupload</p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>

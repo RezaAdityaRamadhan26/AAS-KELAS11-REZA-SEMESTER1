@@ -45,6 +45,6 @@ export const config = {
   matcher: [
     "/admin/:path*",
     "/student/:path*",
-    "/api/:path*", // protect non-auth APIs if needed; auth endpoints are allowed above
+    "/api/:path*", // protect non-auth APIs if needed auth endpoints are allowed above
   ],
 };

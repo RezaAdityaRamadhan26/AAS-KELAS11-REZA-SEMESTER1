@@ -110,7 +110,6 @@ export default function LoginPage() {
                             type="text"
                             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                             placeholder="Masukkan username"
-                            required
                         />
                     </div>
                     <div>
@@ -121,7 +120,6 @@ export default function LoginPage() {
                             type="password"
                             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                             placeholder="Masukkan password"
-                            required
                         />
                     </div>
                     <button

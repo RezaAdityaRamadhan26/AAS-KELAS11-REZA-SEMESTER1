@@ -76,7 +76,7 @@ export default function StudentHomePage() {
         <div className="space-y-6">
             {/* Header dengan Greeting */}
             <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-6 text-white">
-                <h1 className="text-2xl font-bold flex items-center gap-2">Selamat Datang, {session?.user?.name || "Siswa"}! <Hand className="inline" size={24} /></h1>
+                <h1 className="text-2xl font-bold flex items-center gap-2">Selamat Datang, {session?.user?.name || "Siswa"}!</h1>
                 <p className="text-orange-100 mt-1">Temukan buku favoritmu dan mulai membaca hari ini</p>
             </div>
 
