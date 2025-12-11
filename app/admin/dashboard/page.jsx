@@ -2,6 +2,8 @@ import { getAllLoans, getAllBooks } from "@/lib/actions";
 import db from "@/lib/db";
 import { Library, BookOpen, Users, Clock, CheckCircle } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboardPage() {
     const loans = await getAllLoans();
     const books = await getAllBooks(1000);

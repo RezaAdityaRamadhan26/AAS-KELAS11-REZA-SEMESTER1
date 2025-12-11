@@ -3,6 +3,8 @@ import Image from "next/image";
 import { getAllBooks } from "@/lib/actions";
 import { BookOpen, Search, Library } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default async function LandingPage() {
   const books = await getAllBooks(8);
 

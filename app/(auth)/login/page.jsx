@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -16,7 +16,7 @@ const roles = [
     { key: "admin", label: "Admin" },
 ];
 
-export default function LoginPage() {
+function LoginForm() {
     const router = useRouter();
     const search = useSearchParams();
     const preRole = search.get("role");
@@ -146,5 +146,24 @@ export default function LoginPage() {
                 </p>
             </div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 flex items-center justify-center">
+                <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-orange-200/50 p-8">
+                    <div className="flex flex-col items-center">
+                        <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white shadow-md">
+                            <Library size={28} />
+                        </div>
+                        <p className="mt-4 text-slate-600">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        }>
+            <LoginForm />
+        </Suspense>
     );
 }
