@@ -117,15 +117,15 @@ INSERT INTO users (username, password, full_name, role, email, is_active)
 VALUES ('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Administrator', 'admin', 'admin@sekolah.id', 1);
 
 -- Insert sample student (password: student123)
-INSERT INTO users (username, password, full_name, role, class_grade, email, is_active) 
-VALUES ('student1', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Siswa Satu', 'siswa', '11 IPA 1', 'student1@sekolah.id', 1);
+    INSERT INTO users (username, password, full_name, role, email, is_active) 
+    VALUES ('student1', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Siswa Satu', 'siswa', 'student1@sekolah.id', 1);
 
 -- Insert sample books
-INSERT INTO books (title, author, publisher, publication_year, genre, category, stock, description) 
+INSERT INTO books (title, author, publisher, publication_year, genre, category, stock, description, image) 
 VALUES 
-('Laskar Pelangi', 'Andrea Hirata', 'Bentang Pustaka', 2005, 'Novel', 'Fiksi', 5, 'Novel tentang perjuangan anak-anak di Belitung'),
-('Bumi Manusia', 'Pramoedya Ananta Toer', 'Hasta Mitra', 1980, 'Novel', 'Sejarah', 3, 'Novel tetralogi Buru pertama'),
-('Matematika SMA Kelas 11', 'Tim Penulis', 'Erlangga', 2020, 'Pelajaran', 'Pendidikan', 10, 'Buku pelajaran matematika untuk SMA');
+('Laskar Pelangi', 'Andrea Hirata', 'Bentang Pustaka', 2005, 'Novel', 'Fiksi', 5, 'Novel tentang perjuangan anak-anak di Belitung', '/images/books/laskar-pelangi.jpg'),
+('Bumi Manusia', 'Pramoedya Ananta Toer', 'Hasta Mitra', 1980, 'Novel', 'Sejarah', 3, 'Novel tetralogi Buru pertama', '/images/books/bumi-manusia.jpg'),
+('Matematika SMA Kelas 11', 'Tim Penulis', 'Erlangga', 2020, 'Pelajaran', 'Pendidikan', 10, 'Buku pelajaran matematika untuk SMA', '/images/books/matematika-sma-11.jpg');
 
 -- ============================================================================
 -- 6. VERIFIKASI TABEL DAN DATA

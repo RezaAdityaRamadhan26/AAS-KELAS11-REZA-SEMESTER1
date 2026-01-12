@@ -20,6 +20,7 @@ export default function AdminBorrowingsPage() {
         setLoading(false);
     };
 
+    // TODO: ganti adminId dengan user id dari sesi admin saat sudah tersedia
     const handleApprove = async (loanId) => {
         setActionLoading(loanId);
         const response = await fetch("/api/loans/approve", {
@@ -28,6 +29,7 @@ export default function AdminBorrowingsPage() {
             body: JSON.stringify({
                 loanId,
                 action: "approve",
+                adminId: 1,
             }),
         });
 
