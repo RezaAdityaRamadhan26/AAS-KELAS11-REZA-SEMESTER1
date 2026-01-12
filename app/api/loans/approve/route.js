@@ -4,7 +4,7 @@ import { approveLoan, rejectLoan } from "@/lib/actions";
 export async function PUT(request) {
   try {
     const body = await request.json();
-    const { loanId, action, reason } = body;
+    const { loanId, action, reason, adminId } = body;
 
     if (!loanId || !action) {
       return NextResponse.json(
@@ -14,7 +14,13 @@ export async function PUT(request) {
     }
 
     if (action === "approve") {
-      await approveLoan(loanId);
+      if (!adminId) {
+        return NextResponse.json(
+          { error: "adminId is required for approval" },
+          { status: 400 }
+        );
+      }
+      await approveLoan(loanId, adminId);
       return NextResponse.json(
         { success: true, message: "Peminjaman berhasil disetujui" },
         { status: 200 }
