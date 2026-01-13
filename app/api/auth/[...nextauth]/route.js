@@ -13,21 +13,28 @@ const options = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials) return null;
-        const user = await getUserByUsername(credentials.username);
-        if (!user) return null;
+        try {
+          if (!credentials?.username || !credentials?.password) return null;
 
-        // Compare password dengan hash menggunakan bcrypt
-        const ok = await bcrypt.compare(credentials.password, user.password);
+          const user = await getUserByUsername(credentials.username);
+          if (!user) return null;
 
-        if (!ok) return null;
-        return {
-          id: String(user.id),
-          name: user.full_name,
-          username: user.username,
-          role: user.role,
-          class_grade: user.class_grade,
-        };
+          // Compare password dengan hash menggunakan bcrypt
+          const ok = await bcrypt.compare(credentials.password, user.password);
+
+          if (!ok) return null;
+
+          return {
+            id: String(user.id),
+            name: user.full_name,
+            username: user.username,
+            role: user.role,
+            class_grade: user.class_grade,
+          };
+        } catch (error) {
+          console.error("Auth error:", error);
+          return null;
+        }
       },
     }),
   ],

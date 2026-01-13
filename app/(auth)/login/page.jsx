@@ -45,27 +45,29 @@ function LoginForm() {
             return;
         }
 
-        const res = await signIn("credentials", {
-            redirect: false,
-            username: form.username,
-            password: form.password,
-        });
+        try {
+            const res = await signIn("credentials", {
+                redirect: false,
+                username: form.username,
+                password: form.password,
+            });
 
-        if (res?.error) {
-            setErr("Username atau password salah");
+            if (res?.error) {
+                setErr("Username atau password salah");
+                setLoading(false);
+                return;
+            }
+
+            // Redirect berdasarkan role yang dipilih (NextAuth sudah set session)
+            if (role === "admin") {
+                router.push("/admin/dashboard");
+            } else {
+                router.push("/student/home");
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            setErr("Terjadi kesalahan saat login");
             setLoading(false);
-            return;
-        }
-
-        // Ambil session untuk redirect berdasar role real
-        const response = await fetch("/api/auth/session");
-        const session = await response.json();
-        const finalRole = session?.user?.role || role;
-
-        if (finalRole === "admin") {
-            router.push("/admin/dashboard");
-        } else {
-            router.push("/student/home");
         }
     }
 
