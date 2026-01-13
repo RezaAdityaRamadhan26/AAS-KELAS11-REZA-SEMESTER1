@@ -14,16 +14,26 @@ const options = {
       },
       async authorize(credentials) {
         try {
-          if (!credentials?.username || !credentials?.password) return null;
+          if (!credentials?.username || !credentials?.password) {
+            console.log("Missing credentials");
+            return null;
+          }
 
           const user = await getUserByUsername(credentials.username);
-          if (!user) return null;
+          if (!user) {
+            console.log("User not found:", credentials.username);
+            return null;
+          }
 
           // Compare password dengan hash menggunakan bcrypt
           const ok = await bcrypt.compare(credentials.password, user.password);
 
-          if (!ok) return null;
+          if (!ok) {
+            console.log("Password mismatch for user:", credentials.username);
+            return null;
+          }
 
+          console.log("Auth success for:", credentials.username);
           return {
             id: String(user.id),
             name: user.full_name,
@@ -32,7 +42,7 @@ const options = {
             class_grade: user.class_grade,
           };
         } catch (error) {
-          console.error("Auth error:", error);
+          console.error("Auth error:", error.message, error.stack);
           return null;
         }
       },
