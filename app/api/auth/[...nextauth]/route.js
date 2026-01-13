@@ -13,27 +13,53 @@ const options = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        const startTime = Date.now();
         try {
           if (!credentials?.username || !credentials?.password) {
             console.log("Missing credentials");
             return null;
           }
 
-          const user = await getUserByUsername(credentials.username);
+          console.log("Starting auth for:", credentials.username);
+
+          // Add timeout untuk getUserByUsername
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Database timeout")), 8000)
+          );
+
+          const user = await Promise.race([
+            getUserByUsername(credentials.username),
+            timeoutPromise,
+          ]);
+
           if (!user) {
             console.log("User not found:", credentials.username);
             return null;
           }
 
-          // Compare password dengan hash menggunakan bcrypt
-          const ok = await bcrypt.compare(credentials.password, user.password);
+          console.log("User found, comparing password...");
+
+          // Compare password dengan timeout
+          const comparePromise = bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+          const compareTimeout = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("bcrypt timeout")), 10000)
+          );
+
+          const ok = await Promise.race([comparePromise, compareTimeout]);
 
           if (!ok) {
             console.log("Password mismatch for user:", credentials.username);
             return null;
           }
 
-          console.log("Auth success for:", credentials.username);
+          const duration = Date.now() - startTime;
+          console.log(
+            `Auth success for: ${credentials.username} (${duration}ms)`
+          );
+
           return {
             id: String(user.id),
             name: user.full_name,
@@ -42,7 +68,8 @@ const options = {
             class_grade: user.class_grade,
           };
         } catch (error) {
-          console.error("Auth error:", error.message, error.stack);
+          const duration = Date.now() - startTime;
+          console.error(`Auth error after ${duration}ms:`, error.message);
           return null;
         }
       },

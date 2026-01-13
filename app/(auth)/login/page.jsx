@@ -46,14 +46,28 @@ function LoginForm() {
         }
 
         try {
-            const res = await signIn("credentials", {
-                redirect: false,
-                username: form.username,
-                password: form.password,
-            });
+            // Add timeout untuk prevent infinite hang
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Login timeout')), 30000) // 30 second timeout
+            );
+
+            const res = await Promise.race([
+                signIn("credentials", {
+                    redirect: false,
+                    username: form.username,
+                    password: form.password,
+                }),
+                timeoutPromise
+            ]);
 
             if (res?.error) {
                 setErr("Username atau password salah");
+                setLoading(false);
+                return;
+            }
+
+            if (!res?.ok) {
+                setErr("Login gagal, coba lagi");
                 setLoading(false);
                 return;
             }
@@ -64,9 +78,10 @@ function LoginForm() {
             } else {
                 router.push("/student/home");
             }
+            // Note: setLoading(false) tidak dipanggil karena page akan redirect
         } catch (error) {
             console.error("Login error:", error);
-            setErr("Terjadi kesalahan saat login");
+            setErr(error.message === "Login timeout" ? "Login timeout, coba lagi" : "Terjadi kesalahan saat login");
             setLoading(false);
         }
     }
