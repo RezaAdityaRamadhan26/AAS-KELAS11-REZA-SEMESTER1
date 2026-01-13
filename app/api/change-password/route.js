@@ -34,7 +34,8 @@ export async function POST(request) {
   }
 
   // Hash new password
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  // Hash password baru dengan bcrypt rounds 6 untuk performa di serverless
+  const hashedPassword = await bcrypt.hash(newPassword, 6);
 
   // Update password
   await query("UPDATE users SET password = ? WHERE id = ?", [

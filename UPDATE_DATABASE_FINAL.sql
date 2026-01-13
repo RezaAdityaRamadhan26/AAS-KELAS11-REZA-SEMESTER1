@@ -112,13 +112,13 @@ CREATE TABLE IF NOT EXISTS notifications (
 -- 5. INSERT DATA SAMPLE (OPTIONAL)
 -- ============================================================================
 
--- Insert admin user (password: admin123)
+-- Insert admin user (password: admin123) - bcrypt rounds 6 for serverless performance
 INSERT INTO users (username, password, full_name, role, email, is_active) 
-VALUES ('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Administrator', 'admin', 'admin@sekolah.id', 1);
+VALUES ('admin', '$2a$06$7vJZE.7P8qMQz3M0L.6.yOxGRZVhKx8CqE4fM.zJYxZ9g5k9KiMFW', 'Administrator', 'admin', 'admin@sekolah.id', 1);
 
--- Insert sample student (password: student123)
-    INSERT INTO users (username, password, full_name, role, email, is_active) 
-    VALUES ('student1', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Siswa Satu', 'siswa', 'student1@sekolah.id', 1);
+-- Insert sample student (password: student123) - bcrypt rounds 6 for serverless performance
+INSERT INTO users (username, password, full_name, role, class_grade, email, is_active) 
+VALUES ('student1', '$2a$06$7vJZE.7P8qMQz3M0L.6.yOxGRZVhKx8CqE4fM.zJYxZ9g5k9KiMFW', 'Siswa Satu', 'siswa', '11 IPA 1', 'student1@sekolah.id', 1);
 
 -- Insert sample books
 INSERT INTO books (title, author, publisher, publication_year, genre, category, stock, description, image) 
